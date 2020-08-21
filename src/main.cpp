@@ -15,7 +15,8 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     // Init DTK.
-    Application::loadDXcbPlugin();
+    //2020.08.21  klu/panguV remove
+    //Application::loadDXcbPlugin();
 
     Application a(argc, argv);
 
