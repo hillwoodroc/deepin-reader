@@ -1,12 +1,14 @@
 [Desktop Entry]
 Categories=Office;
-Exec=deepin-reader %F
+Exec=/usr/bin/deepin-turbo-invoker  --type=dtkwidget deepin-reader %F
 StartupNotify=true
 TryExec=deepin-reader
 Type=Application
 Icon=deepin-reader
 MimeType=application/pdf;
 X-Deepin-Vendor=deepin
+TZ='Asia/Shanghai'
+
 GenericName=Document Viewer
 GenericName[zh_CN]=文档查看器
 GenericName[zh_TW]=文檔查看器
