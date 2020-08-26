@@ -22,8 +22,7 @@
 #define PRINTMANAGER_H
 
 #include <DWidget>
-
-#include <QObject>
+#include <dprintpreviewdialog.h>
 
 class QPrinter;
 
@@ -41,7 +40,7 @@ public:
     void setPrintPath(const QString &strPrintPath);
 
 private slots:
-    void slotPrintPreview(QPrinter *printer);
+    void slotPrintPreview(DPrinter *printer);
 
 private:
     QString     m_strPrintName = "";
