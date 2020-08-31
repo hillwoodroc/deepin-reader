@@ -1,6 +1,6 @@
 [Desktop Entry]
 Categories=Office;
-Exec=/usr/bin/deepin-turbo-invoker  --type=dtkwidget deepin-reader %F
+Exec=deepin-reader %F
 StartupNotify=true
 TryExec=deepin-reader
 Type=Application
