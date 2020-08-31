@@ -23,10 +23,11 @@ QMAKE_RPATHDIR += /usr/lib/deepin-reader
 
 #ruma param
 DEFINES+= QT_NO_DEBUG_OUTPUT
-QMAKE_LFLAGS_APP += -pie
-QMAKE_CXXFLAGS += "-Wl,-as-need -fPIE"
+
+QMAKE_CXXFLAGS+= -fPIE
+QMAKE_LFLAGS += -pie
 contains(QMAKE_HOST.arch, mips64):{
-    QMAKE_CXXFLAGS += "-O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi"
+    QMAKE_CXXFLAGS += "-O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-need"
 }
 
 include ($$SRCPWD/app/app.pri)
