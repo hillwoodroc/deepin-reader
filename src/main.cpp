@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     //Application::loadDXcbPlugin();
 
     Application a(argc, argv);
+    qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
 
     QCommandLineParser parser;
 
