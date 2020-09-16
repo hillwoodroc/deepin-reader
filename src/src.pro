@@ -22,7 +22,7 @@ LIBS += -L"$${3RDPARTTPATH}/lib" -ldeepin-poppler-qt -ldeepin-poppler
 QMAKE_RPATHDIR += /usr/lib/deepin-reader
 
 #ruma param
-DEFINES+= QT_NO_DEBUG_OUTPUT
+#DEFINES+= QT_NO_DEBUG_OUTPUT
 
 QMAKE_CXXFLAGS+= -fPIE
 QMAKE_LFLAGS += -pie

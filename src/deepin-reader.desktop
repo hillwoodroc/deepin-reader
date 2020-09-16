@@ -7,7 +7,6 @@ Type=Application
 Icon=deepin-reader
 MimeType=application/pdf;
 X-Deepin-Vendor=deepin
-TZ='Asia/Shanghai'
 
 GenericName=Document Viewer
 GenericName[zh_CN]=文档查看器
