@@ -22,6 +22,9 @@
 #include "CustomControl/CustomWidget.h"
 #include "pdfControl/docview/commonstruct.h"
 
+#include <QMouseEvent>
+#include <QWheelEvent>
+
 class DocummentProxy;
 class ProxyFileDataModel;
 class FindWidget;

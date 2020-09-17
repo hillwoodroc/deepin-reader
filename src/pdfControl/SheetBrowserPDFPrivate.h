@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMouseEvent>
 #include <QPointer>
+#include <QWheelEvent>
 
 #include "application.h"
 #include "MsgHeader.h"

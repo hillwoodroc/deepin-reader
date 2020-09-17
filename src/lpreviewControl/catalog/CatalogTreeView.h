@@ -21,6 +21,7 @@
 
 #include <DTreeView>
 #include <QStandardItemModel>
+#include <QMouseEvent>
 
 #include "pdfControl/docview/pagebase.h"
 

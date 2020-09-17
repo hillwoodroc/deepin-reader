@@ -34,6 +34,9 @@
 #include "global.h"
 #include <QLabel>
 #include <QSet>
+#include <QDragEnterEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 class DocOperation;
 class SheetBrowserDJVUItem;

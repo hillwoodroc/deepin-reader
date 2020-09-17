@@ -1,7 +1,6 @@
 #include "DocTabBar.h"
 #include <QDebug>
 #include <DPlatformWindowHandle>
-#include <QDragEnterEvent>
 #include <QMimeData>
 #include <QProcess>
 #include <QDir>

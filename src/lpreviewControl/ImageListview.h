@@ -18,6 +18,7 @@
 #define IMAGELISTVIEW_H
 
 #include <DListView>
+#include <QMouseEvent>
 
 DWIDGET_USE_NAMESPACE
 struct ImagePageInfo_t;

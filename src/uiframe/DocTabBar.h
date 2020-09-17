@@ -3,6 +3,7 @@
 
 #include <DTabBar>
 #include <DTabWidget>
+#include <QDragEnterEvent>
 
 DWIDGET_USE_NAMESPACE
 

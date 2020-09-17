@@ -14,6 +14,7 @@
 #include <QParallelAnimationGroup>
 #include <QTimer>
 #include <QRectF>
+#include <QWheelEvent>
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE

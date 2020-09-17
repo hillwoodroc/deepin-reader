@@ -23,7 +23,6 @@
 #include "menu/BookMarkMenu.h"
 #include "menu/NoteMenu.h"
 
-#include <QMouseEvent>
 #include <QSet>
 
 ImageListView::ImageListView(DocSheet *sheet, QWidget *parent)
