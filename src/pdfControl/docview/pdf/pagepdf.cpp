@@ -3,6 +3,7 @@
 #include "docummentpdf.h"
 
 #include <QDebug>
+#include <QRectF>
 #include <QPainter>
 
 #include <exception>

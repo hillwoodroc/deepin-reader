@@ -43,6 +43,7 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QClipboard>
+#include <QPainterPath>
 #include <DApplication>
 #include "ModuleHeader.h"
 //#include <KEncodingProber>
