@@ -15,6 +15,7 @@
 #include "pdf/RenderThreadPdf.h"
 
 #include <QTimer>
+#include <QWheelEvent>
 
 static QMutex mutexlockloaddata;
 

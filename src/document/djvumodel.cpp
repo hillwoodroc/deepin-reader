@@ -6,6 +6,7 @@
 #include <QFile>
 #include <qmath.h>
 #include <QMutexLocker>
+#include <QPainterPath>
 
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>

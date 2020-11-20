@@ -7,7 +7,8 @@
 #include <QStandardItemModel>
 #include <QString>
 #include <QWidget>
-
+#include <QPainterPath>
+#include <QRectF>
 class QColor;
 class QImage;
 class QSizeF;

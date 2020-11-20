@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QUuid>
+#include <QDragEnterEvent>
 
 #include "DocSheet.h"
 #include "application.h"

@@ -39,6 +39,10 @@
 #include <QBitmap>
 #include <DMenu>
 #include <DGuiApplicationHelper>
+#include <QPainterPath>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QDragEnterEvent>
 
 DWIDGET_USE_NAMESPACE
 

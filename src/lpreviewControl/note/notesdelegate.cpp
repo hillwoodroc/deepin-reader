@@ -22,7 +22,7 @@
 #include <QDebug>
 #include <QItemSelectionModel>
 #include <QAbstractItemView>
-
+#include <QPainterPath>
 #include <DGuiApplicationHelper>
 
 NotesDelegate::NotesDelegate(QAbstractItemView *parent)

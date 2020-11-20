@@ -33,6 +33,8 @@
 #include "document/model.h"
 #include "global.h"
 #include <QLabel>
+#include <QSet>
+#include <QPointF>
 
 class DocOperation;
 class SheetBrowserDJVUItem;

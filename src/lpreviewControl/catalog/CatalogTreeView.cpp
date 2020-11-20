@@ -30,6 +30,7 @@
 #include "ModuleHeader.h"
 #include "MsgHeader.h"
 
+#include <QMouseEvent>
 #include <QProxyStyle>
 #include <QPainter>
 #include <QStylePainter>

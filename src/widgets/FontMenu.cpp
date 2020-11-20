@@ -54,7 +54,6 @@ void FontMenu::readCurDocParam(DocSheet *sheet)
     }
 }
 
-
 /**
  * @brief FontMenu::slotTwoPage
  * 双页显示

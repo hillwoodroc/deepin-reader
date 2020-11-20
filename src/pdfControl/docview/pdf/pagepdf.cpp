@@ -4,7 +4,7 @@
 
 #include <QDebug>
 #include <QPainter>
-
+#include <QRectF>
 #include <exception>
 
 class PagePdfPrivate: public PageBasePrivate, public  PageInterface

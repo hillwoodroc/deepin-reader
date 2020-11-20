@@ -24,6 +24,7 @@
 #include "lpreviewControl/ImageViewModel.h"
 #include "bookmarkdelegate.h"
 
+#include <QSet>
 #include <DHorizontalLine>
 
 const int LEFTMINHEIGHT = 80;

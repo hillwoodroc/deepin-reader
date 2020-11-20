@@ -31,7 +31,7 @@
 
 #include <QGraphicsItem>
 #include <QSet>
-
+#include <QRectF>
 #include "global.h"
 
 namespace deepin_reader {

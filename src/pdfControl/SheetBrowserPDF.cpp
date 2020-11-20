@@ -27,6 +27,9 @@
 #include "pdfControl/docview/docummentproxy.h"
 #include "pdfControl/DocSheetPDF.h"
 
+#include <QMouseEvent>
+#include <QWheelEvent>
+
 void SheetBrowserPDF::setDoubleShow(bool isShow)
 {
     Q_D(SheetBrowserPDF);
