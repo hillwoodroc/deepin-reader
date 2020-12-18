@@ -25,7 +25,7 @@ BuildRequires: poppler-qt5-devel
 BuildRequires: libspectre-devel
 BuildRequires: kf5-karchive-devel
 BuildRequires: libtiff-devel
-BuildRequires: libfreetype6-devel
+BuildRequires: freetype-devel
 BuildRequires: nspr-devel
 BuildRequires: fontconfig-devel
 BuildRequires: lcms2-devel
