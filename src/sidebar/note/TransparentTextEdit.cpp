@@ -33,7 +33,7 @@
 #include <QPointF>
 
 TransparentTextEdit::TransparentTextEdit(DWidget *parent)
-    : QTextEdit(parent)
+    : DTextEdit(parent)
 {
     this->setObjectName("TransparentTextEdit");
 
@@ -77,7 +77,7 @@ void TransparentTextEdit::slotTextEditMaxContantNum()
 
 void TransparentTextEdit::paintEvent(QPaintEvent *event)
 {
-    QTextEdit::paintEvent(event);
+    DTextEdit::paintEvent(event);
     QPainter painter(this->viewport());
     painter.setRenderHints(QPainter::Antialiasing);
     int maxLineHeight = 2;
@@ -123,5 +123,5 @@ void TransparentTextEdit::keyPressEvent(QKeyEvent *keyEvent)
         return;
     }
 
-    QTextEdit::keyPressEvent(keyEvent);
+    DTextEdit::keyPressEvent(keyEvent);
 }

@@ -21,7 +21,7 @@
 #ifndef TRANSPARENTTEXTEDIT_H
 #define TRANSPARENTTEXTEDIT_H
 
-#include <QTextEdit>
+#include <DTextEdit>
 
 #include <DWidget>
 
@@ -34,7 +34,7 @@ DWIDGET_USE_NAMESPACE
  * @brief The TransparentTextEdit class
  * 文本编辑控件
  */
-class TransparentTextEdit : public QTextEdit
+class TransparentTextEdit : public DTextEdit
 {
     Q_OBJECT
 public:
