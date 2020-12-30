@@ -1,5 +1,10 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    src \
-   # test/deepin_reader_case
+CONFIG  += ordered
+
+SUBDIRS += 3rdparty/deepin-pdfium
+
+SUBDIRS += reader
+
+SUBDIRS += test
+

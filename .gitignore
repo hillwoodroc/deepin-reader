@@ -25,6 +25,8 @@
 
 *.dylib
 
+*.log
+
 # Qt-es
 
 object_script.*.Release
@@ -65,17 +67,32 @@ Makefile*
 
 *.qmake.stash
 
+deepin-reader
+
+
 # Qt unit tests
 
-target_wrapper.*
+*.gcda
 
+*.gcno
 
+*.info
+
+*.out
+
+test/coverage
+
+test/files/saveas.pdf
+
+test/files/saveas.djvu
+
+test-deepin-reader
+
+test/target_wrapper.sh
 
 # QtCreator
 
 *.autosave
-
-
 
 # QtCreator Qml
 
@@ -89,14 +106,15 @@ target_wrapper.*
 
 CMakeLists.txt.user*
 
-
-
 # QtCreator 4.8< compilation database 
 
 compile_commands.json
 
-
-
 # QtCreator local machine specific files for imported projects
 
 *creator.user*
+
+# 3rdparty
+3rdparty/deepin-pdfium/lib
+
+3rdparty/deepdf
