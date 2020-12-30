@@ -71,10 +71,12 @@ DPdfDocPrivate::DPdfDocPrivate()
 
 DPdfDocPrivate::~DPdfDocPrivate()
 {
+    DPdfMutexLocker locker("DPdfDocPrivate::~DPdfDocPrivate()");
+
     qDeleteAll(m_pages);
 
     if (nullptr != m_docHandler)
-        FPDF_CloseDocument((FPDF_DOCUMENT)m_docHandler);
+        FPDF_CloseDocument(reinterpret_cast<FPDF_DOCUMENT>(m_docHandler));
 }
 
 DPdfDoc::Status DPdfDocPrivate::loadFile(const QString &filePath, const QString &password)
@@ -88,15 +90,17 @@ DPdfDoc::Status DPdfDocPrivate::loadFile(const QString &filePath, const QString 
         return m_status;
     }
 
+    DPdfMutexLocker locker("DPdfDocPrivate::loadFile");
+
     void *ptr = FPDF_LoadDocument(m_filePath.toUtf8().constData(),
                                   password.toUtf8().constData());
 
     m_docHandler = static_cast<DPdfDocHandler *>(ptr);
 
-    m_status = m_docHandler ? DPdfDoc::SUCCESS : parseError(FPDF_GetLastError());
+    m_status = m_docHandler ? DPdfDoc::SUCCESS : parseError(static_cast<int>(FPDF_GetLastError()));
 
     if (m_docHandler) {
-        m_pageCount = FPDF_GetPageCount((FPDF_DOCUMENT)m_docHandler);
+        m_pageCount = FPDF_GetPageCount(reinterpret_cast<FPDF_DOCUMENT>(m_docHandler));
         m_pages.fill(nullptr, m_pageCount);
     }
 
@@ -125,7 +129,9 @@ bool DPdfDoc::isEncrypted() const
     if (!isValid())
         return false;
 
-    return FPDF_GetDocPermissions((FPDF_DOCUMENT)d_func()->m_docHandler) != 0xFFFFFFFF;
+    DPdfMutexLocker locker("DPdfDoc::isEncrypted()");
+
+    return FPDF_GetDocPermissions(reinterpret_cast<FPDF_DOCUMENT>(d_func()->m_docHandler)) != 0xFFFFFFFF;
 }
 
 DPdfDoc::Status DPdfDoc::tryLoadFile(const QString &filename, const QString &password)
@@ -136,14 +142,16 @@ DPdfDoc::Status DPdfDoc::tryLoadFile(const QString &filename, const QString &pas
         return status;
     }
 
+    DPdfMutexLocker locker("DPdfDoc::tryLoadFile");
+
     void *ptr = FPDF_LoadDocument(filename.toUtf8().constData(),
                                   password.toUtf8().constData());
 
     DPdfDocHandler *docHandler = static_cast<DPdfDocHandler *>(ptr);
-    status = docHandler ? SUCCESS : parseError(FPDF_GetLastError());
+    status = docHandler ? SUCCESS : parseError(static_cast<int>(FPDF_GetLastError()));
 
     if (docHandler) {
-        FPDF_CloseDocument((FPDF_DOCUMENT)docHandler);
+        FPDF_CloseDocument(reinterpret_cast<FPDF_DOCUMENT>(docHandler));
     }
 
     return status;
@@ -172,7 +180,9 @@ bool DPdfDoc::save()
     if (!saveWriter.open(QIODevice::WriteOnly))
         return false;
 
+    DPdfMutexLocker locker("DPdfDoc::save");
     bool result = FPDF_SaveAsCopy(reinterpret_cast<FPDF_DOCUMENT>(d_func()->m_docHandler), &write, FPDF_NO_INCREMENTAL);
+    locker.unlock();
 
     saveWriter.close();
 
@@ -211,7 +221,9 @@ bool DPdfDoc::saveAs(const QString &filePath)
     if (!saveWriter.open(QIODevice::ReadWrite))
         return false;
 
+    DPdfMutexLocker locker("DPdfDoc::saveAs");
     bool result = FPDF_SaveAsCopy(reinterpret_cast<FPDF_DOCUMENT>(d_func()->m_docHandler), &write, FPDF_NO_INCREMENTAL);
+    locker.unlock();
 
     saveWriter.close();
 
@@ -233,33 +245,25 @@ DPdfDoc::Status DPdfDoc::status() const
     return d_func()->m_status;
 }
 
-DPdfPage *DPdfDoc::page(int i)
+DPdfPage *DPdfDoc::page(int i, qreal xRes, qreal yRes)
 {
     if (i < 0 || i >= d_func()->m_pageCount)
         return nullptr;
 
     if (!d_func()->m_pages[i]) {
-        d_func()->m_pages[i] = new DPdfPage(d_func()->m_docHandler, i);
+        d_func()->m_pages[i] = new DPdfPage(d_func()->m_docHandler, i, xRes, yRes);
     }
 
     return d_func()->m_pages[i];
 }
 
-QSizeF DPdfDoc::pageSizeF(int index) const
-{
-    double width = 0;
-    double height = 0;
-
-    FPDF_GetPageSizeByIndex((FPDF_DOCUMENT)d_func()->m_docHandler, index, &width, &height);
-    return QSizeF(width, height);
-}
-
-void collectBookmarks(DPdfDoc::Outline &outline, const CPDF_BookmarkTree &tree, CPDF_Bookmark This)
+void collectBookmarks(DPdfDoc::Outline &outline, const CPDF_BookmarkTree &tree, CPDF_Bookmark This, qreal xRes, qreal yRes)
 {
     DPdfDoc::Section section;
 
     const WideString &title = This.GetTitle();
-    section.title = QString::fromWCharArray(title.c_str(), title.GetLength());
+
+    section.title = QString::fromWCharArray(title.c_str(), static_cast<int>(title.GetLength()));
 
     bool hasx = false, hasy = false, haszoom = false;
     float x = 0.0, y = 0.0, z = 0.0;
@@ -267,61 +271,71 @@ void collectBookmarks(DPdfDoc::Outline &outline, const CPDF_BookmarkTree &tree, 
     const CPDF_Dest &dest = This.GetDest(tree.GetDocument()).GetArray() ? This.GetDest(tree.GetDocument()) : This.GetAction().GetDest(tree.GetDocument());
     section.nIndex = dest.GetDestPageIndex(tree.GetDocument());
     dest.GetXYZ(&hasx, &hasy, &haszoom, &x, &y, &z);
-    section.offsetPointF = QPointF(static_cast<qreal>(x), static_cast<qreal>(y));
+    section.offsetPointF = QPointF(static_cast<qreal>(x) * xRes / 72, static_cast<qreal>(y) * yRes / 72);
 
     const CPDF_Bookmark &Child = tree.GetFirstChild(&This);
     if (Child.GetDict() != nullptr) {
-        collectBookmarks(section.children, tree, Child);
+        collectBookmarks(section.children, tree, Child, xRes, yRes);
     }
     outline << section;
 
     const CPDF_Bookmark &SibChild = tree.GetNextSibling(&This);
     if (SibChild.GetDict() != nullptr) {
-        collectBookmarks(outline, tree, SibChild);
+        collectBookmarks(outline, tree, SibChild, xRes, yRes);
     }
 }
 
-DPdfDoc::Outline DPdfDoc::outline()
+DPdfDoc::Outline DPdfDoc::outline(qreal xRes, qreal yRes)
 {
+    DPdfMutexLocker locker("DPdfDoc::outline");
+
     Outline outline;
     CPDF_BookmarkTree tree(reinterpret_cast<CPDF_Document *>(d_func()->m_docHandler));
     CPDF_Bookmark cBookmark;
     const CPDF_Bookmark &firstRootChild = tree.GetFirstChild(&cBookmark);
     if (firstRootChild.GetDict() != nullptr)
-        collectBookmarks(outline, tree, firstRootChild);
+        collectBookmarks(outline, tree, firstRootChild, xRes, yRes);
 
     return outline;
 }
 
 DPdfDoc::Properies DPdfDoc::proeries()
 {
+    DPdfMutexLocker locker("DPdfDoc::proeries");
+
     Properies properies;
     int fileversion = 1;
     properies.insert("Version", "1");
-    if (FPDF_GetFileVersion((FPDF_DOCUMENT)d_func()->m_docHandler, &fileversion)) {
+    if (FPDF_GetFileVersion(reinterpret_cast<FPDF_DOCUMENT>(d_func()->m_docHandler), &fileversion)) {
         properies.insert("Version", QString("%1.%2").arg(fileversion / 10).arg(fileversion % 10));
     }
     properies.insert("Encrypted", isEncrypted());
-    properies.insert("Linearized", FPDF_GetFileLinearized((FPDF_DOCUMENT)d_func()->m_docHandler));
-
+    properies.insert("Linearized", FPDF_GetFileLinearized(reinterpret_cast<FPDF_DOCUMENT>(d_func()->m_docHandler)));
     properies.insert("KeyWords", QString());
     properies.insert("Title", QString());
     properies.insert("Creator", QString());
     properies.insert("Producer", QString());
     CPDF_Document *pDoc = reinterpret_cast<CPDF_Document *>(d_func()->m_docHandler);
+
     const CPDF_Dictionary *pInfo = pDoc->GetInfo();
     if (pInfo) {
-        const WideString &KeyWords = pInfo->GetUnicodeTextFor("Keywords");
-        properies.insert("KeyWords", QString::fromWCharArray(KeyWords.c_str(), KeyWords.GetLength()));
+        const WideString &KeyWords = pInfo->GetUnicodeTextFor("KeyWords");
+        properies.insert("KeyWords", QString::fromWCharArray(KeyWords.c_str()));
 
-        const WideString &Title = pInfo->GetUnicodeTextFor("Title");
-        properies.insert("Title", QString::fromWCharArray(Title.c_str(), Title.GetLength()));
+        //windows和mac上生成的pdf此处编码格式不同,需要嗅探查找
+        const ByteString &Title = pInfo->GetStringFor("Title");
+        if ("utf-8" == DPdfGlobal::textCodeType(Title.c_str())) {
+            properies.insert("Title", QString::fromUtf8(Title.c_str()));
+        } else {
+            const WideString &WTitle = pInfo->GetUnicodeTextFor("Title");
+            properies.insert("Title", QString::fromWCharArray(WTitle.c_str()));
+        }
 
         const WideString &Creator = pInfo->GetUnicodeTextFor("Creator");
-        properies.insert("Creator", QString::fromWCharArray(Creator.c_str(), Creator.GetLength()));
+        properies.insert("Creator", QString::fromWCharArray(Creator.c_str()));
 
         const WideString &Producer = pInfo->GetUnicodeTextFor("Producer");
-        properies.insert("Producer", QString::fromWCharArray(Producer.c_str(), Producer.GetLength()));
+        properies.insert("Producer", QString::fromWCharArray(Producer.c_str()));
     }
 
     return properies;
@@ -329,9 +343,11 @@ DPdfDoc::Properies DPdfDoc::proeries()
 
 QString DPdfDoc::label(int index) const
 {
+    DPdfMutexLocker locker("DPdfDoc::label index = " + QString::number(index));
+
     CPDF_PageLabel label(reinterpret_cast<CPDF_Document *>(d_func()->m_docHandler));
     const Optional<WideString> &str = label.GetLabel(index);
     if (str.has_value())
-        return QString::fromWCharArray(str.value().c_str(), str.value().GetLength());
+        return QString::fromWCharArray(str.value().c_str(), static_cast<int>(str.value().GetLength()));
     return QString();
 }

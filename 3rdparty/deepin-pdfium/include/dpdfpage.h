@@ -7,11 +7,10 @@
 
 #include "dpdfglobal.h"
 
-class DPdfium;
 class DPdfAnnot;
 class DPdfPagePrivate;
 class DPdfDocHandler;
-class DEEPIN_PDFIUM_EXPORT DPdfPage : public QObject
+class DEEPDF_EXPORT DPdfPage : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DPdfPage)
@@ -21,36 +20,31 @@ public:
     ~DPdfPage();
 
     /**
-     * @brief 图片宽
+     * @brief 是否有效
      * @return
      */
-    qreal width() const;
-
-    /**
-     * @brief 图片高
-     * @return
-     */
-    qreal height() const;
+    bool isValid() const;
 
     /**
      * @brief 当页索引
      * @return
      */
-    int pageIndex() const;
+    int index() const;
 
     /**
-     * @brief 获取图片
-     * @param scale 缩放因子
+     * @brief 大小 (根据目标设备dpi算出一个相同物理尺寸对应的像素大小)
      * @return
      */
-    QImage image(qreal scale);
+    QSizeF sizeF() const;
 
     /**
-     * @brief 获取图片一部分
-     * @param scale
+     * @brief 按像素宽高获取原图
+     * @param width (in pixel)
+     * @param height (in pixel)
+     * @param rect 要取的切片,默认为全图 (in pixel)
      * @return
      */
-    QImage image(qreal xscale, qreal yscale, qreal x = 0, qreal y = 0, qreal width = 0, qreal height = 0);
+    QImage image(int width, int height, QRect slice = QRect());
 
     /**
      * @brief 字符数
@@ -60,33 +54,41 @@ public:
 
     /**
      * @brief 根据索引获取文本范围
-     * @param start
+     * @param index
+     * @param textrect (in pixel)
      * @return
      */
-    bool getTextRect(int start, QRectF &textrect);
+    bool textRect(int index, QRectF &textrect);
 
     /**
      * @brief 获取多个字符文本范围
-     * @param start
+     * @param index
      * @param charCount
-     * @return
+     * @return (in pixel)
      */
-    QVector<QRectF> getTextRects(int start, int charCount);
+    QVector<QRectF> textRects(int index, int charCount);
+
+    /**
+     * @brief 获取本页所有文本和范围
+     * @param charCount 文本字符数
+     * @param rects
+     */
+    void allTextRects(int &charCount, QStringList &texts, QVector<QRectF> &rects);
 
     /**
      * @brief 根据范围获取文本
-     * @param rect
+     * @param rect (in pixel)
      * @return
      */
     QString text(const QRectF &rect);
 
     /**
      * @brief 根据索引获取文本
-     * @param start
+     * @param index
      * @param charCount
      * @return
      */
-    QString text(int start, int charCount = 1);
+    QString text(int index, int charCount = 1);
 
     /**
      * @brief 添加文字注释
@@ -94,7 +96,7 @@ public:
      * @param text 注释内容
      * @return 添加失败返回nullptr
      */
-    DPdfAnnot *createTextAnnot(QPointF point, QString text);
+    DPdfAnnot *createTextAnnot(QPointF pos, QString text);
 
     /**
      * @brief 更新注释
@@ -103,7 +105,7 @@ public:
      * @param point 点击的位置 传空则不更新 基于原尺寸
      * @return
      */
-    bool updateTextAnnot(DPdfAnnot *dAnnot, QString text, QPointF point = QPointF());
+    bool updateTextAnnot(DPdfAnnot *dAnnot, QString text, QPointF pos = QPointF());
 
     /**
      * @brief 添加高亮注释
@@ -112,7 +114,7 @@ public:
      * @param color 高亮颜色
      * @return 添加失败返回nullptr
      */
-    DPdfAnnot *createHightLightAnnot(const QList<QRectF> &list, QString text, QColor color = QColor());
+    DPdfAnnot *createHightLightAnnot(const QList<QRectF> &rects, QString text, QColor color = QColor());
 
     /**
      * @brief 更新高亮注释
@@ -151,6 +153,13 @@ public:
      */
     QList<DPdfAnnot *> links();
 
+    /**
+     * @brief 初始化需要延时的注释,如果link中的goto
+     * @param dAnnot
+     * @return
+     */
+    bool initAnnot(DPdfAnnot *dAnnot);
+
 signals:
     /**
      * @brief 添加注释时触发 ，在需要的时候可以重新获取annotations()
@@ -171,7 +180,7 @@ signals:
     void annotRemoved(DPdfAnnot *dAnnot);
 
 private:
-    DPdfPage(DPdfDocHandler *handler, int pageIndex);
+    DPdfPage(DPdfDocHandler *handler, int pageIndex, qreal xRes = 72, qreal yRes = 72);
 
     QScopedPointer<DPdfPagePrivate> d_ptr;
 };

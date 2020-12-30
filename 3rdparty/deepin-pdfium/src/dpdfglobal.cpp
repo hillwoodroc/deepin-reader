@@ -1,14 +1,17 @@
 
 #include <QtCore>
 #include <QString>
+
 #include "dpdfglobal.h"
 #include "public/fpdfview.h"
 
+#include <chardet.h>
+
 static bool initialized = false;
 
-const static DPDFGlobal instance = DPDFGlobal();
+const static DPdfGlobal instance = DPdfGlobal();
 
-void DPDFGlobal::initPdfium()
+void DPdfGlobal::init()
 {
     if (!initialized) {
         FPDF_InitLibrary();
@@ -16,7 +19,7 @@ void DPDFGlobal::initPdfium()
     }
 }
 
-void DPDFGlobal::shutdownPdfium()
+void DPdfGlobal::destory()
 {
     if (initialized) {
         FPDF_DestroyLibrary();
@@ -24,14 +27,35 @@ void DPDFGlobal::shutdownPdfium()
     }
 }
 
-
-DPDFGlobal::DPDFGlobal()
+DPdfGlobal::DPdfGlobal()
 {
-    initPdfium();
+    init();
 }
 
-DPDFGlobal::~DPDFGlobal()
+DPdfGlobal::~DPdfGlobal()
 {
-    shutdownPdfium();
+    destory();
 }
 
+QString DPdfGlobal::textCodeType(const char *text)
+{
+    DetectObj *obj = detect_obj_init();
+    detect(text, &obj);
+    const QString &encodeind = QString(obj->encoding).toLower();
+    detect_obj_free(&obj);
+    return encodeind;
+}
+
+Q_GLOBAL_STATIC_WITH_ARGS(QMutex, pdfMutex, (QMutex::Recursive));
+
+DPdfMutexLocker::DPdfMutexLocker(const QString &tmpLog): QMutexLocker(pdfMutex())
+{
+//    m_log = tmpLog;
+//    qInfo() << m_log + " begin ";
+//    m_time.start();
+}
+
+DPdfMutexLocker::~DPdfMutexLocker()
+{
+//    qInfo() << m_log + " end time = " << m_time.elapsed();
+}

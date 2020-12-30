@@ -13,7 +13,7 @@
 class DPdfPage;
 class DPdfDocHandler;
 class DPdfDocPrivate;
-class DEEPIN_PDFIUM_EXPORT DPdfDoc : public QObject
+class DEEPDF_EXPORT DPdfDoc : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DPdfDoc)
@@ -75,17 +75,17 @@ public:
     Status status() const;
 
     /**
-     * @brief 返回指定PAGE
+     * @brief 创建新的page返回
      * @param i
      * @return
      */
-    DPdfPage *page(int i);
+    DPdfPage *page(int i, qreal xRes, qreal yRes);
 
     /**
      * @brief 目录
      * @return
      */
-    Outline outline();
+    Outline outline(qreal xRes, qreal yRes);
 
     /**
      * @brief 文档属性信息
@@ -106,13 +106,6 @@ public:
      * @return
      */
     QString label(int index) const;
-
-    /**
-     * @brief 获取页面大小
-     * @param index
-     * @return
-     */
-    QSizeF pageSizeF(int index) const;
 
     /**
      * @brief 保存到当前文件

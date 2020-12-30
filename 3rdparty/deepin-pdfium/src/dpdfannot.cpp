@@ -1,7 +1,5 @@
 #include "dpdfannot.h"
 
-#include "public/fpdf_annot.h"
-
 DPdfAnnot::AnnotType DPdfAnnot::type()
 {
     return m_type;
@@ -37,6 +35,26 @@ QList<QRectF> DPdfTextAnnot::boundaries()
 }
 
 void DPdfTextAnnot::setRectF(const QRectF &rectf)
+{
+    m_rect = rectf;
+}
+
+DPdfSquareAnnot::DPdfSquareAnnot()
+{
+    m_type = ASQUARE;
+}
+
+bool DPdfSquareAnnot::pointIn(QPointF pos)
+{
+    return m_rect.contains(pos);
+}
+
+QList<QRectF> DPdfSquareAnnot::boundaries()
+{
+    return QList<QRectF>() << m_rect;
+}
+
+void DPdfSquareAnnot::setRectF(const QRectF &rectf)
 {
     m_rect = rectf;
 }
@@ -161,7 +179,7 @@ int DPdfLinkAnnot::pageIndex() const
 
 QPointF DPdfLinkAnnot::offset() const
 {
-    return QPointF(m_left, m_top);
+    return QPointF(static_cast<qreal>(m_left), static_cast<qreal>(m_top));
 }
 
 void DPdfLinkAnnot::setLinkType(int type)
@@ -173,3 +191,12 @@ int DPdfLinkAnnot::linkType() const
 {
     return m_linkType;
 }
+
+bool DPdfLinkAnnot::isValid() const
+{
+    if (Goto == m_linkType)
+        return m_index != -1;
+
+    return true;
+}
+

@@ -8,24 +8,30 @@
 #include <QList>
 #include <QColor>
 
-class DEEPIN_PDFIUM_EXPORT DPdfAnnot
+class DEEPDF_EXPORT DPdfAnnot
 {
 public:
     enum AnnotType {
         AUnknown = 0,         ///< 前期支持以外的
         AText = 1,            ///< TextAnnotation
         AHighlight = 2,       ///< HighlightAnnotation
-        ALink = 3
+        ALink = 3,
+        ASQUARE = 5
     };
 
     virtual ~DPdfAnnot();
+
     /**
      * @brief 是否在该点上
-     * @param pos
+     * @param pos (in point)
      * @return
      */
     virtual bool pointIn(QPointF pos) = 0;
 
+    /**
+     * @brief boundaries
+     * @return (in point)
+     */
     virtual QList<QRectF> boundaries() = 0;
 
     AnnotType type();
@@ -39,7 +45,7 @@ protected:
     QString m_text;
 };
 
-class DEEPIN_PDFIUM_EXPORT DPdfTextAnnot : public DPdfAnnot
+class DEEPDF_EXPORT DPdfTextAnnot : public DPdfAnnot
 {
     friend class DPdfPage;
     friend class DPdfPagePrivate;
@@ -56,7 +62,22 @@ private:
     QRectF m_rect;
 };
 
-class DEEPIN_PDFIUM_EXPORT DPdfHightLightAnnot : public DPdfAnnot
+class DEEPDF_EXPORT DPdfSquareAnnot : public DPdfAnnot
+{
+public:
+    DPdfSquareAnnot();
+
+    bool pointIn(QPointF pos) override;
+
+    QList<QRectF> boundaries() override;
+
+    void setRectF(const QRectF &rectf);
+
+private:
+    QRectF m_rect;
+};
+
+class DEEPDF_EXPORT DPdfHightLightAnnot : public DPdfAnnot
 {
     friend class DPdfPage;
     friend class DPdfPagePrivate;
@@ -78,7 +99,7 @@ private:
     QColor m_color;
 };
 
-class DEEPIN_PDFIUM_EXPORT DPdfLinkAnnot : public DPdfAnnot
+class DEEPDF_EXPORT DPdfLinkAnnot : public DPdfAnnot
 {
 public:
     DPdfLinkAnnot();
@@ -114,6 +135,8 @@ public:
 
     int linkType() const;
 
+    bool isValid() const;
+
 private:
     QRectF m_rect;
     QString m_url;
@@ -125,7 +148,7 @@ private:
     float m_top = 0;
 };
 
-class DEEPIN_PDFIUM_EXPORT DPdfUnknownAnnot : public DPdfAnnot
+class DEEPDF_EXPORT DPdfUnknownAnnot : public DPdfAnnot
 {
 public:
     DPdfUnknownAnnot();
