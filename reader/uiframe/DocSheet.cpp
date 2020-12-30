@@ -1117,7 +1117,7 @@ void DocSheet::onPopPrintDialog()
     preview.setAsynPreview(pagesNumber());
     preview.setDocName(QFileInfo(filePath()).fileName());
     preview.setPrintFromPath(m_filePath);       //旧版本和最新版本使用新接口，解决打印模糊问题
-    connect(&preview, static_cast<void(DPrintPreviewDialog::*)(DPrinter *, const QVector<int> &)>(&DPrintPreviewDialog::paintRequested), this, &DocSheet::onPrintRequested1);
+    connect(&preview, static_cast<void(DPrintPreviewDialog::*)(DPrinter *, const QVector<int> &)>(&DPrintPreviewDialog::paintRequested), this, &DocSheet::onPrintRequested);
 #else
     connect(&preview, &DPrintPreviewDialog::paintRequested, this, &DocSheet::onPrintRequested);
 #endif
