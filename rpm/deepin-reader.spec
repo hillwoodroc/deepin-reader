@@ -58,6 +58,7 @@ popd
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/%{name}/translations/*.qm
 %{_datadir}/applications/%{name}.desktop
+/usr/lib/deepin-reader/libdeepin-poppler*.so*
 
 %changelog
 * Fri Sep 18 2020 guoqinglan <guoqinglan@uniontech.com> - 5.7.0.21-1
