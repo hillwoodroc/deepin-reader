@@ -5,7 +5,7 @@
 %endif
 
 Name:           deepin-reader
-Version:        5.8.0.26
+Version:        5.9.0.26
 Release:        %{specrelease}
 Summary:        A simple PDF reader, supporting bookmarks, highlights and annotations
 License:        GPLv3+
@@ -66,7 +66,7 @@ popd
 /usr/lib/deepin-reader/libdeepin-poppler*.so*
 
 %changelog
-* Thu Apr 16 2021 zhangdingwen <zhangdingwen@uniontech.com> - 5.8.0.26-1
+* Thu Apr 16 2021 zhangdingwen <zhangdingwen@uniontech.com> - 5.9.0.26-1
 - Initial release for OpenEuler
 
 * Fri Sep 18 2020 guoqinglan <guoqinglan@uniontech.com> - 5.7.0.21-1
