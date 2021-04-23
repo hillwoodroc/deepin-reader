@@ -1603,6 +1603,8 @@ void SheetBrowser::jumpToNextSearchResult()
 
                 if (m_searchCurIndex >= size)
                     m_searchCurIndex = 0;
+
+                m_searchPageTextIndex = -1;
                 continue;
             }
 
@@ -1641,6 +1643,8 @@ void SheetBrowser::jumpToPrevSearchResult()
 
                 if (m_searchCurIndex < 0)
                     m_searchCurIndex = size - 1;
+
+                m_searchPageTextIndex = pageHighlightSize;
                 continue;
             }
 
